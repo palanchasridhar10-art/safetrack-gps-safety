@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SafeTrack — Trusted Contacts</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="page">
+  <div class="card card--wide">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <span class="brand-name">SafeTrack</span>
+    </div>
+    <p class="subtitle">Add exactly two trusted contacts (family or friends) who will receive your safety alerts.</p>
+
+    <div id="existingList"></div>
+
+    <div class="contact-form-block" id="addFormBlock">
+      <h4>Add a trusted contact</h4>
+      <form id="contactForm">
+        <label for="cName">Name</label>
+        <input type="text" id="cName" placeholder="e.g. Mother" required />
+
+        <label for="cPhone">WhatsApp number (with country code)</label>
+        <input type="tel" id="cPhone" placeholder="+91XXXXXXXXXX" required />
+
+        <label for="cRelationship">Relationship</label>
+        <input type="text" id="cRelationship" placeholder="e.g. Family, Friend" />
+
+        <label for="cEmail">Email (optional)</label>
+        <input type="email" id="cEmail" placeholder="optional@example.com" />
+
+        <button type="submit" class="btn btn-primary" id="addBtn">Save contact</button>
+      </form>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+    <div class="success-box" id="successBox"></div>
+
+    <button class="btn btn-secondary" id="continueBtn" style="display:none; margin-top:16px;">Continue to Dashboard</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="confirmModal">
+  <div class="modal">
+    <h3>Confirm contact</h3>
+    <p id="confirmText" style="color:var(--muted); font-size:14px;"></p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="cancelConfirm">Cancel</button>
+      <button class="btn btn-primary" id="acceptConfirm">Confirm &amp; save</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/contacts.js"></script>
+</body>
+</html>

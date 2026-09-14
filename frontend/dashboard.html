@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SafeTrack — Dashboard</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="dashboard">
+  <div class="dash-header">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <span class="brand-name">SafeTrack</span>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <p class="greeting">Hello, <span id="userName">…</span></p>
+
+  <div class="status-row">
+    <div class="status-pill">
+      <span class="label">GPS Status</span>
+      <span id="gpsStatus"><span class="status-dot dot-amber"></span>Checking…</span>
+    </div>
+    <div class="status-pill">
+      <span class="label">Tracking</span>
+      <span id="trackingStatus"><span class="status-dot dot-red"></span>Inactive</span>
+    </div>
+  </div>
+
+  <div class="contacts-card">
+    <h3>Trusted contacts</h3>
+    <div id="contactsList">Loading…</div>
+  </div>
+
+  <div class="consent-note">
+    📍 Your location is only ever shared with your two trusted contacts above, and only when <em>you</em> tap a button below. SafeTrack never tracks or sends your location automatically or without your action.
+  </div>
+
+  <div class="sos-wrap">
+    <button class="sos-btn" id="sosBtn">🚨<br/>EMERGENCY<br/>SOS</button>
+    <p class="sos-hint">Press and confirm to alert both contacts immediately</p>
+  </div>
+
+  <div class="action-grid">
+    <button class="action-btn" id="sendLocationBtn">
+      <span class="icon">📍</span> Send current location
+    </button>
+    <button class="action-btn" id="trackingBtn">
+      <span class="icon">🛡️</span> Start safety tracking
+    </button>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+  <div class="success-box" id="successBox"></div>
+
+  <div class="last-location-card" id="lastLocationCard">
+    <span>Last location</span>
+    <p class="coords" id="lastCoords">No location shared yet</p>
+    <span id="lastUpdated"></span>
+    <div class="wa-link-list" id="waLinks"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="sosModal">
+  <div class="modal">
+    <h3>🚨 Confirm Emergency SOS</h3>
+    <p style="color:var(--muted); font-size:14px;">This will immediately send your current location to both trusted contacts as an emergency alert. Only proceed if you need help.</p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="cancelSos">Cancel</button>
+      <button class="btn btn-danger" id="confirmSos">Send SOS now</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="consentModal">
+  <div class="modal">
+    <h3 id="consentTitle">📍 Location Sharing</h3>
+    <p id="consentText" style="color:var(--muted); font-size:14px;"></p>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="cancelConsent">Cancel</button>
+      <button class="btn btn-primary" id="acceptConsent">I Understand — Continue</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/geo.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
