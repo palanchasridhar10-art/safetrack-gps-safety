@@ -1,13 +1,14 @@
 import logging
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+
+import phonenumbers
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
 from app.config import settings
 from app.deps import get_current_user
 from app.models.models import User
-from app.schemas.contacts import normalize_phone_number
 from app.services import whatsapp_service
 
 logger = logging.getLogger("safetrack.whatsapp_router")
@@ -50,7 +51,12 @@ def get_whatsapp_status(user: User = Depends(get_current_user)):
 def test_whatsapp(payload: TestWhatsAppRequest, user: User = Depends(get_current_user)):
     """Sends a test WhatsApp alert to a phone number to test connectivity."""
     try:
-        normalized_phone = normalize_phone_number(payload.phone_number)
+        parsed = phonenumbers.parse(payload.phone_number, None)
+        if not phonenumbers.is_valid_number(parsed):
+            raise ValueError("Invalid phone number. Include country code, e.g. +91XXXXXXXXXX")
+        normalized_phone = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+    except phonenumbers.NumberParseException:
+        raise HTTPException(status_code=400, detail="Invalid phone number. Include country code, e.g. +91XXXXXXXXXX")
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
