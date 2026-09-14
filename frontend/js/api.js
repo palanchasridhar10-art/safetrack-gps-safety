@@ -4,7 +4,11 @@
  * Talks to the FastAPI backend. Update API_BASE_URL to point at your
  * deployed backend (e.g. https://api.yourdomain.com) in production.
  */
-const API_BASE_URL = window.SAFETRACK_API_BASE_URL || "http://127.0.0.1:8000";
+const API_BASE_URL =
+  window.SAFETRACK_API_BASE_URL ||
+  ((window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") && window.location.port === "5500"
+    ? "http://127.0.0.1:8000"
+    : "");
 
 const TOKEN_KEY = "safetrack_access_token";
 const OTP_SESSION_KEY = "safetrack_otp_session_token";

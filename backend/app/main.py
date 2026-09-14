@@ -1,8 +1,10 @@
 import logging
 
+from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
@@ -48,3 +50,14 @@ app.include_router(emergency.router)
 @app.get("/api/health")
 def health():
     return {"status": "ok", "app": settings.APP_NAME}
+
+
+# Mount frontend static files if available
+for candidate_dir in [
+    Path(__file__).resolve().parent.parent.parent / "frontend",
+    Path(__file__).resolve().parent.parent / "frontend",
+    Path("/app/frontend"),
+]:
+    if candidate_dir.exists() and (candidate_dir / "index.html").exists():
+        app.mount("/", StaticFiles(directory=str(candidate_dir), html=True), name="frontend")
+        break
