@@ -10,6 +10,17 @@ const lastCoords = document.getElementById("lastCoords");
 const lastUpdated = document.getElementById("lastUpdated");
 const waLinks = document.getElementById("waLinks");
 
+const waStatusPill = document.getElementById("waStatusPill");
+const waToggleHeader = document.getElementById("waToggleHeader");
+const waDetailsPanel = document.getElementById("waDetailsPanel");
+const waModeBadge = document.getElementById("waModeBadge");
+const waModeExplanation = document.getElementById("waModeExplanation");
+const waTestPhone = document.getElementById("waTestPhone");
+const waTestBtn = document.getElementById("waTestBtn");
+const waTestResult = document.getElementById("waTestResult");
+const waWebhookUrl = document.getElementById("waWebhookUrl");
+const waVerifyToken = document.getElementById("waVerifyToken");
+
 const sosBtn = document.getElementById("sosBtn");
 const sosModal = document.getElementById("sosModal");
 const cancelSos = document.getElementById("cancelSos");
@@ -41,6 +52,7 @@ async function init() {
   await loadContacts();
   await checkGpsPermission();
   await refreshTrackingStatus();
+  await refreshWhatsAppStatus();
   await loadLastLocation();
 }
 
@@ -302,5 +314,84 @@ logoutBtn.addEventListener("click", async () => {
   Storage.clearAll();
   window.location.href = "index.html";
 });
+
+// ---------- WhatsApp API Gateway ----------
+
+async function refreshWhatsAppStatus() {
+  try {
+    const status = await Api.getWhatsAppStatus();
+    if (status.mode === "cloud_api") {
+      waStatusPill.innerHTML = `<span class="status-dot dot-green"></span>Cloud API`;
+      waModeBadge.textContent = "Cloud API Active";
+      waModeBadge.style.color = "var(--success)";
+      waModeBadge.style.background = "rgba(52,211,153,0.15)";
+      waModeExplanation.innerHTML = `Meta WhatsApp Cloud API is connected (Phone ID: <code>${escapeHtml(status.phone_number_id || "Active")}</code>). Alerts send automatically in the background.`;
+    } else {
+      waStatusPill.innerHTML = `<span class="status-dot dot-amber"></span>Click-to-Chat`;
+      waModeBadge.textContent = "Click-to-Chat";
+      waModeBadge.style.color = "var(--warn)";
+      waModeBadge.style.background = "rgba(251,191,36,0.15)";
+      waModeExplanation.textContent = "Running in consent-first Click-to-Chat mode (wa.me). Alerts open pre-filled in WhatsApp so you can send them with one tap.";
+    }
+
+    if (waWebhookUrl) {
+      const fullWebhook = window.location.origin + status.webhook_endpoint;
+      waWebhookUrl.textContent = fullWebhook;
+    }
+    if (waVerifyToken) {
+      waVerifyToken.textContent = status.webhook_verify_token;
+    }
+  } catch (_) {
+    waStatusPill.innerHTML = `<span class="status-dot dot-amber"></span>wa.me Mode`;
+    waModeBadge.textContent = "wa.me Mode";
+    waModeExplanation.textContent = "Click-to-chat fallback active.";
+  }
+}
+
+if (waToggleHeader) {
+  waToggleHeader.addEventListener("click", () => {
+    const isHidden = waDetailsPanel.style.display === "none";
+    waDetailsPanel.style.display = isHidden ? "block" : "none";
+  });
+}
+
+if (waTestBtn) {
+  waTestBtn.addEventListener("click", async () => {
+    const phone = waTestPhone.value.trim();
+    if (!phone) {
+      waTestResult.style.display = "block";
+      waTestResult.style.background = "rgba(255,77,94,0.15)";
+      waTestResult.style.color = "var(--danger)";
+      waTestResult.textContent = "Please enter a recipient phone number with country code (e.g. +1234567890).";
+      return;
+    }
+
+    waTestBtn.disabled = true;
+    waTestBtn.textContent = "Sending…";
+    waTestResult.style.display = "none";
+
+    try {
+      const res = await Api.testWhatsApp({ phone_number: phone });
+      waTestResult.style.display = "block";
+      if (res.link) {
+        waTestResult.style.background = "rgba(251,191,36,0.15)";
+        waTestResult.style.color = "var(--warn)";
+        waTestResult.innerHTML = `Test alert ready: <a href="${escapeHtml(res.link)}" target="_blank" rel="noopener" style="color:var(--primary); font-weight:600; text-decoration:underline;">Tap here to open test message in WhatsApp</a>`;
+      } else {
+        waTestResult.style.background = "rgba(52,211,153,0.15)";
+        waTestResult.style.color = "var(--success)";
+        waTestResult.textContent = res.message || "Test alert delivered successfully!";
+      }
+    } catch (err) {
+      waTestResult.style.display = "block";
+      waTestResult.style.background = "rgba(255,77,94,0.15)";
+      waTestResult.style.color = "var(--danger)";
+      waTestResult.textContent = err.message || "Failed to transmit WhatsApp test alert.";
+    } finally {
+      waTestBtn.disabled = false;
+      waTestBtn.textContent = "Send Test Alert";
+    }
+  });
+}
 
 init();

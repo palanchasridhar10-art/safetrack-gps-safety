@@ -107,6 +107,10 @@ const Api = {
 
   triggerSOS: (payload) => apiRequest("/api/emergency/sos", { method: "POST", body: payload, auth: true }),
   emergencyHistory: () => apiRequest("/api/emergency/history", { auth: true }),
+
+  getWhatsAppStatus: () => apiRequest("/api/whatsapp/status", { auth: true }),
+  testWhatsApp: (payload) => apiRequest("/api/whatsapp/test", { method: "POST", body: payload, auth: true }),
+  updateWhatsAppConfig: (payload) => apiRequest("/api/whatsapp/config", { method: "POST", body: payload, auth: true }),
 };
 
 function requireAuth() {

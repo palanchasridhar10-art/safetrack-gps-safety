@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     WHATSAPP_PHONE_NUMBER_ID: str = ""
     WHATSAPP_BUSINESS_ACCOUNT_ID: str = ""
     WHATSAPP_API_VERSION: str = "v20.0"
+    WHATSAPP_WEBHOOK_VERIFY_TOKEN: str = "safetrack_verify_token"
 
     # Rate limiting
     RATE_LIMIT_LOGIN: str = "5/minute"

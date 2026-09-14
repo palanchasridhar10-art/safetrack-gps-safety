@@ -129,3 +129,22 @@ def send_location_alert(
     # Fallback: click-to-chat links (requires the user to tap Send).
     links = [build_click_to_chat_link(phone, message) for phone in contact_phones]
     return links, "click_to_chat"
+
+
+def send_test_message(phone_e164: str) -> tuple[bool, str, str | None]:
+    """Sends a test alert to verify the WhatsApp API connection.
+    Returns (success, message, link_if_click_to_chat).
+    """
+    test_text = (
+        "🛡️ SAFETRACK WHATSAPP API SERVER TEST\n\n"
+        "Your WhatsApp alert gateway is online and active!\n\n"
+        "This is an automated test message from SafeTrack."
+    )
+    if _is_cloud_api_configured():
+        ok = send_via_cloud_api(phone_e164, test_text)
+        if ok:
+            return True, "Test message successfully sent via Meta WhatsApp Cloud API.", None
+        return False, "Failed to send via WhatsApp Cloud API. Please check token or template status.", None
+
+    link = build_click_to_chat_link(phone_e164, test_text)
+    return True, "WhatsApp Cloud API credentials not configured. Generated click-to-chat link.", link

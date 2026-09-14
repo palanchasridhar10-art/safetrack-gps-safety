@@ -27,11 +27,45 @@
       <span class="label">Tracking</span>
       <span id="trackingStatus"><span class="status-dot dot-red"></span>Inactive</span>
     </div>
+    <div class="status-pill">
+      <span class="label">WhatsApp API</span>
+      <span id="waStatusPill"><span class="status-dot dot-green"></span>Checking…</span>
+    </div>
   </div>
 
   <div class="contacts-card">
     <h3>Trusted contacts</h3>
     <div id="contactsList">Loading…</div>
+  </div>
+
+  <div class="contacts-card" id="whatsappCard">
+    <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" id="waToggleHeader">
+      <h3 style="margin:0; display:flex; align-items:center; gap:8px;">
+        <span>💬</span> WhatsApp API Server
+      </h3>
+      <span id="waModeBadge" style="font-size:12px; padding:3px 10px; border-radius:12px; background:rgba(52,211,153,0.15); color:var(--success);">Checking…</span>
+    </div>
+    <div id="waDetailsPanel" style="display:none; margin-top:14px; border-top:1px solid var(--card-border); padding-top:12px;">
+      <p style="font-size:13px; color:var(--muted); margin:0 0 12px;" id="waModeExplanation">
+        Checking server connectivity…
+      </p>
+
+      <!-- Test WhatsApp Send -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:6px;">Test WhatsApp Alert Transmission</label>
+        <div style="display:flex; gap:8px;">
+          <input type="tel" id="waTestPhone" placeholder="Enter recipient phone (e.g. +1234567890)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid var(--card-border); background:var(--bg); color:var(--text); font-size:13px;" />
+          <button id="waTestBtn" class="action-btn" style="padding:8px 14px; font-size:13px; min-height:unset; width:auto;">Send Test Alert</button>
+        </div>
+        <div id="waTestResult" style="font-size:12px; margin-top:8px; padding:8px 10px; border-radius:6px; display:none;"></div>
+      </div>
+
+      <!-- Live Webhook Configuration -->
+      <div style="background:var(--bg); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--muted);">
+        <div style="margin-bottom:4px;"><strong style="color:var(--text);">Webhook Endpoint:</strong> <code style="color:var(--primary);" id="waWebhookUrl">/api/whatsapp/webhook</code></div>
+        <div><strong style="color:var(--text);">Verify Token:</strong> <code style="color:var(--primary);" id="waVerifyToken">safetrack_verify_token</code></div>
+      </div>
+    </div>
   </div>
 
   <div class="consent-note">

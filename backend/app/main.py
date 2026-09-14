@@ -10,7 +10,7 @@ from slowapi.errors import RateLimitExceeded
 from app.config import settings
 from app.database import Base, engine
 from app.deps import limiter
-from app.routers import auth, contacts, emergency, location, safety
+from app.routers import auth, contacts, emergency, location, safety, whatsapp
 
 logging.basicConfig(level=logging.INFO)
 
@@ -45,6 +45,7 @@ app.include_router(contacts.router)
 app.include_router(location.router)
 app.include_router(safety.router)
 app.include_router(emergency.router)
+app.include_router(whatsapp.router)
 
 
 @app.get("/api/health")
